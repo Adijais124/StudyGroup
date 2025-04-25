@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Profile - StudyHive</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #6200ea;
+            color: white;
+            padding: 10px 20px;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            max-width: 400px;
+            margin: 50px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            display: block;
+            width: calc(100% - 20px);
+            padding: 8px 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #6200ea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #3700b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Edit Your Profile</h1>
+    </header>
+    <form th:action="@{/profile/update}" method="post">
+        <input type="text" name="name" th:value="${user.name}" placeholder="Full Name">
+        <input type="email" name="email" th:value="${user.email}" placeholder="Email Address" readonly>
+        <input type="text" name="course" th:value="${user.course}" placeholder="Course/Class Name">
+        <button type="submit">Update Profile</button>
+    </form>
+</body>
+</html>

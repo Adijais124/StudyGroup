@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Dashboard - StudyHive</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #6200ea;
+            color: white;
+            padding: 10px 20px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .profile, .groups, .suggestions {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 10px 15px;
+            background: #6200ea;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #3700b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>StudyHive Dashboard</h1>
+        <nav>
+            <a href="/profile">Edit Profile</a>
+            <a href="/groups">Find Groups</a>
+        </nav>
+    </header>
+    <div class="content">
+        <div class="profile">
+            <h2>Your Profile</h2>
+            <p><strong>Name:</strong> <span th:text="${user.name}">John Doe</span></p>
+            <p><strong>Course/Class:</strong> <span th:text="${user.course}">Computer Science - CSE-B</span></p>
+        </div>
+        <div class="groups">
+            <h2>Your Study Groups</h2>
+            <ul>
+                <li th:each="group : ${userGroups}">
+                    <span th:text="${group.name}">Midterm Study Group</span> - 
+                    <button th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/details\''">View</button>
+                    <button th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/leave\''">Leave</button>
+                </li>
+            </ul>
+        </div>
+        <div class="suggestions">
+            <h2>Suggested Groups</h2>
+            <ul>
+                <li th:each="group : ${suggestedGroups}">
+                    <span th:text="${group.name}">Finals Prep Group</span> - 
+                    <button th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/join\''">Join</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
