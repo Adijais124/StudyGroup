@@ -41,6 +41,7 @@ public class AuthController {
         return "login"; // Maps to login.html
     }
 
+
     // Handle User Login
     @PostMapping("/login")
     public String handleLogin(
@@ -58,9 +59,19 @@ public class AuthController {
                 return "redirect:/dashboard"; // Redirect to dashboard on success
             }
         }
+        
 
         // Log failed attempt and redirect to login with error
         System.out.println("Invalid login attempt for: " + email);
-        return "redirect:/login?error"; // Redirect to login page with error
+        return "redirect:/login?error=true"; // Redirect to login page with error
+    }
+    @PostMapping("/logout")
+    public String handleLogout(HttpSession session) {
+        // Invalidate the session
+        session.invalidate();
+        System.out.println("User logged out successfully.");
+
+        // Redirect to login page
+        return "redirect:/";
     }
 }
