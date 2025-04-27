@@ -5,14 +5,15 @@ import com.finalstudy.models.User;
 import com.finalstudy.services.ProfileService;
 import com.finalstudy.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/api/profiles")
+@Controller
+@RequestMapping("/profile")
 public class ProfileController {
 
     @Autowired
@@ -21,37 +22,89 @@ public class ProfileController {
     @Autowired
     private UserService userService;
 
-    // Endpoint to create or update a user profile
-    @PostMapping("/create")
-    public ResponseEntity<String> createProfile(@RequestBody Map<String, String> payload) {
-        String email = payload.get("email");
-        Optional<User> user = userService.findByEmail(email);
-        System.out.println("Looking up user for email: " + email);
-        System.out.println("User found: " + user.isPresent());
-        
-        if (user.isPresent()) {
-            Profile profile = profileService.createProfile(
-                user.get(),
-                payload.get("courseName"),
-                payload.get("className"),
-                payload.get("semester"),
-                payload.get("upcomingExams")
-            );
-            return ResponseEntity.ok("Profile created/updated successfully for user: " + profile.getUser().getEmail());
-        } else {
-            return ResponseEntity.badRequest().body("User not found!");
+    // GET: Show user profile or render the profile page
+    @GetMapping
+    public String showProfile(HttpSession session, Model model) {
+        String userEmail = (String) session.getAttribute("userEmail");
+
+        if (userEmail != null) {
+            Optional<User> userOptional = userService.findByEmail(userEmail);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+
+                // Fetch or create the user's profile
+                Profile profile = profileService.findProfileByUser(user);
+                if (profile == null) {
+                    profile = new Profile(user, "", "", "", ""); // Create empty profile for first-time users
+                }
+
+                model.addAttribute("profile", profile);
+                model.addAttribute("user", user); // Pass user details to the view
+                return "profile"; // Render profile.html
+            }
         }
+
+        return "redirect:/login?error=unauthorized"; // Redirect if user is not logged in
     }
 
-    // Endpoint to fetch a user's profile by their email
-    @GetMapping("/{email}")
-    public ResponseEntity<Profile> getProfileByEmail(@PathVariable String email) {
-        Optional<User> user = userService.findByEmail(email);
-        if (user.isPresent()) {
-            Profile profile = profileService.findProfileByUser(user.get());
-            return ResponseEntity.ok(profile);
-        } else {
-            return ResponseEntity.notFound().build();
+    // POST: Update profile
+    @PostMapping("/update")
+    public String updateProfile(
+            @RequestParam String name,
+            @RequestParam String courseName,
+            @RequestParam String className,
+            @RequestParam String semester,
+            @RequestParam String upcomingExams,
+            HttpSession session) {
+
+        String userEmail = (String) session.getAttribute("userEmail");
+
+        if (userEmail != null) {
+            Optional<User> userOptional = userService.findByEmail(userEmail);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+
+                // Create or update the profile
+                Profile profile = profileService.createProfile(user, courseName, className, semester, upcomingExams);
+                user.setName(name); // Update user's name
+                userService.saveUser(user); // Save updated user details
+                return "redirect:/profile?success=true"; // Redirect to profile with success message
+            }
         }
+
+        return "redirect:/login?error=unauthorized"; // Redirect if user is not logged in
+    }
+    @PostMapping("/updatePassword")
+    public String updatePassword(
+        @RequestParam String currentPassword,
+        @RequestParam String newPassword,
+        HttpSession session) {
+
+        String userEmail = (String) session.getAttribute("userEmail");
+
+        if (userEmail != null) {
+        Optional<User> userOptional = userService.findByEmail(userEmail);
+
+            if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // Validate current password
+                if (userService.checkPassword(currentPassword, user.getPassword())) {
+                // Hash and update new password
+                    String hashedPassword = userService.hashPassword(newPassword);
+                    user.setPassword(hashedPassword);
+                    userService.saveUser(user);
+                    System.out.println("Password updated successfully for: " + userEmail);
+                    return "redirect:/profile?success=password"; // Redirect with success message
+                } else {
+                System.out.println("Current password mismatch for: " + userEmail);
+                return "redirect:/profile?error=password";
+                }
+            }
+        }
+
+        return "redirect:/login?error=unauthorized"; // Redirect if user is not logged in
     }
 }

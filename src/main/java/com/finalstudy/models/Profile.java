@@ -16,6 +16,14 @@ public class Profile {
     private String className;
     private String semester;
     private String upcomingExams;
+    public Profile(User user, String courseName, String className, String semester, String upcomingExams) {
+        this.user = user;
+        this.courseName = courseName;
+        this.className = className;
+        this.semester = semester;
+        this.upcomingExams = upcomingExams;
+    }
+
 
     // Getters and setters
     public Long getId() {

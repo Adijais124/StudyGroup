@@ -41,16 +41,47 @@
         button:hover {
             background: #3700b3;
         }
+        .success-message {
+            color: green;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Edit Your Profile</h1>
     </header>
+
+    <!-- Success message -->
+    <div th:if="${param.success}" class="success-message">
+        Profile updated successfully!
+    </div>
+    <form th:action="@{/profile/updatePassword}" method="post">
+        <h2>Change Password</h2>
+        
+        <!-- Error or Success Messages -->
+        <div th:if="${param.success == 'password'}" style="color: green;">
+            Password updated successfully!
+        </div>
+        <div th:if="${param.error == 'password'}" style="color: red;">
+            Current password is incorrect. Please try again.
+        </div>
+        
+        <label for="currentPassword">Current Password:</label>
+        <input type="password" id="currentPassword" name="currentPassword" required>
+        
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" name="newPassword" required>
+        
+        <button type="submit">Update Password</button>
+    </form>
+
     <form th:action="@{/profile/update}" method="post">
         <input type="text" name="name" th:value="${user.name}" placeholder="Full Name">
-        <input type="email" name="email" th:value="${user.email}" placeholder="Email Address" readonly>
-        <input type="text" name="course" th:value="${user.course}" placeholder="Course/Class Name">
+        <input type="text" name="courseName" th:value="${profile.courseName}" placeholder="Course Name">
+        <input type="text" name="className" th:value="${profile.className}" placeholder="Class Name">
+        <input type="text" name="semester" th:value="${profile.semester}" placeholder="Semester">
+        <input type="text" name="upcomingExams" th:value="${profile.upcomingExams}" placeholder="Upcoming Exams">
         <button type="submit">Update Profile</button>
     </form>
 </body>

@@ -12,12 +12,20 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    // Method to hash the password
+    public String hashPassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword); // Hash the plain password
+    }
+
+    
+
 
     @Autowired
     private UserRepository userRepository;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
+    
     // Method for registering a new user
     public User registerUser(String name, String email, String password, String course) {
         User user = new User();
@@ -49,6 +57,15 @@ public class UserService {
         // Logic to fetch suggested groups from the database can be added here
         return List.of(); // Placeholder for database logic
     }
+    
+
+    // Method to save the updated user details
+    public void saveUser(User user) {
+        userRepository.save(user); // Save the user to the database
+    }
+
+   
+
 
     // Method to update user details
     public void updateUser(User user) {

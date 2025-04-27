@@ -14,7 +14,7 @@ public class ProfileService {
 
     // Method to set up a new profile for a user
     public Profile createProfile(User user, String courseName, String className, String semester, String upcomingExams) {
-        Profile profile = new Profile();
+        Profile profile = new Profile(user, courseName, className, semester, upcomingExams);
         profile.setUser(user);
         profile.setCourseName(courseName);
         profile.setClassName(className);
