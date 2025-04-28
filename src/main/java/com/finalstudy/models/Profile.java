@@ -16,6 +16,11 @@ public class Profile {
     private String className;
     private String semester;
     private String upcomingExams;
+
+    // Default constructor for JPA
+    public Profile() {}
+
+    // Constructor for creating/updating profiles
     public Profile(User user, String courseName, String className, String semester, String upcomingExams) {
         this.user = user;
         this.courseName = courseName;
@@ -23,7 +28,6 @@ public class Profile {
         this.semester = semester;
         this.upcomingExams = upcomingExams;
     }
-
 
     // Getters and setters
     public Long getId() {
@@ -72,5 +76,18 @@ public class Profile {
 
     public void setUpcomingExams(String upcomingExams) {
         this.upcomingExams = upcomingExams;
+    }
+
+    // Additional utility methods if needed (e.g., toString)
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "id=" + id +
+                ", user=" + user +
+                ", courseName='" + courseName + '\'' +
+                ", className='" + className + '\'' +
+                ", semester='" + semester + '\'' +
+                ", upcomingExams='" + upcomingExams + '\'' +
+                '}';
     }
 }

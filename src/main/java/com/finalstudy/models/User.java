@@ -1,6 +1,8 @@
 package com.finalstudy.models;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -16,6 +18,11 @@ public class User {
 
     private String name;
     private String course;
+    private String profilePicture;
+
+    // Many-to-Many relationship with StudyGroup
+    @ManyToMany(mappedBy = "members")
+    private List<StudyGroup> studyGroups = new ArrayList<>();
 
     // Getter method for 'course'
     public String getCourse() {
@@ -27,7 +34,6 @@ public class User {
         this.course = course;
     }
 
-
     public String getName() {
         return name;
     }
@@ -35,7 +41,6 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-
 
     // Getters and setters
     public Long getId() {
@@ -62,4 +67,19 @@ public class User {
         this.password = password;
     }
 
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public List<StudyGroup> getStudyGroups() {
+        return studyGroups;
+    }
+
+    public void setStudyGroups(List<StudyGroup> studyGroups) {
+        this.studyGroups = studyGroups;
+    }
 }

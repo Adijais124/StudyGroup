@@ -37,6 +37,7 @@ public class ProfileController {
                 Profile profile = profileService.findProfileByUser(user);
                 if (profile == null) {
                     profile = new Profile(user, "", "", "", ""); // Create empty profile for first-time users
+                    profileService.saveProfile(profile); // Save the initial empty profile
                 }
 
                 model.addAttribute("profile", profile);
@@ -51,12 +52,12 @@ public class ProfileController {
     // POST: Update profile
     @PostMapping("/update")
     public String updateProfile(
-            @RequestParam String name,
-            @RequestParam String courseName,
-            @RequestParam String className,
-            @RequestParam String semester,
-            @RequestParam String upcomingExams,
-            HttpSession session) {
+        @RequestParam String name,
+        @RequestParam String courseName,
+        @RequestParam String className,
+        @RequestParam String semester,
+        @RequestParam String upcomingExams,
+        HttpSession session) {
 
         String userEmail = (String) session.getAttribute("userEmail");
 
@@ -66,16 +67,20 @@ public class ProfileController {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
 
-                // Create or update the profile
-                Profile profile = profileService.createProfile(user, courseName, className, semester, upcomingExams);
-                user.setName(name); // Update user's name
+                // Update the profile
+                profileService.updateProfile(user.getId(), courseName, className, semester, upcomingExams);
+                
+                // Update user's name
+                user.setName(name);
                 userService.saveUser(user); // Save updated user details
+
                 return "redirect:/profile?success=true"; // Redirect to profile with success message
             }
         }
 
         return "redirect:/login?error=unauthorized"; // Redirect if user is not logged in
     }
+
     @PostMapping("/updatePassword")
     public String updatePassword(
         @RequestParam String currentPassword,
@@ -85,22 +90,23 @@ public class ProfileController {
         String userEmail = (String) session.getAttribute("userEmail");
 
         if (userEmail != null) {
-        Optional<User> userOptional = userService.findByEmail(userEmail);
+            Optional<User> userOptional = userService.findByEmail(userEmail);
 
             if (userOptional.isPresent()) {
-            User user = userOptional.get();
+                User user = userOptional.get();
 
-            // Validate current password
+                // Validate current password
                 if (userService.checkPassword(currentPassword, user.getPassword())) {
-                // Hash and update new password
+                    // Hash and update new password
                     String hashedPassword = userService.hashPassword(newPassword);
                     user.setPassword(hashedPassword);
                     userService.saveUser(user);
                     System.out.println("Password updated successfully for: " + userEmail);
+
                     return "redirect:/profile?success=password"; // Redirect with success message
                 } else {
-                System.out.println("Current password mismatch for: " + userEmail);
-                return "redirect:/profile?error=password";
+                    System.out.println("Current password mismatch for: " + userEmail);
+                    return "redirect:/profile?error=password";
                 }
             }
         }

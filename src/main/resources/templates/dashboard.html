@@ -57,6 +57,21 @@
         .logout-button:hover {
             background: darkred;
         }
+        .group-members img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        .group-members li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .highlight {
+            color: #007bff;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -71,28 +86,71 @@
         </nav>
     </header>
     <div class="content">
+        <!-- Profile Section -->
         <div class="profile">
             <h2>Your Profile</h2>
             <p><strong>Name:</strong> <span th:text="${user.name}">John Doe</span></p>
-            <p><strong>Course/Class:</strong> <span th:text="${user.course}">Computer Science - CSE-B</span></p>
+            <p><strong>Course</strong> <span th:text="${profile.courseName}">Computer Science - CSE-B</span></p>
+            <p><strong>Exam Preparing:</strong> <span th:text="${profile.upcomingExams}">End Sem</span></p>
         </div>
+
+        <!-- User Groups Section -->
         <div class="groups">
             <h2>Your Study Groups</h2>
             <ul>
                 <li th:each="group : ${userGroups}">
-                    <span th:text="${group.name}">Midterm Study Group</span> - 
-                    <button th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/details\''">View</button>
-                    <button th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/leave\''">Leave</button>
+                    <span th:if="${group != null}" th:text="${group.name}">Study Group</span>
+                    <button th:if="${group != null and group.id != null}"
+                            th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/leave\''">
+                        Leave
+                    </button>
                 </li>
             </ul>
         </div>
-        
+
+        <!-- Suggested Groups Section -->
         <div class="suggestions">
             <h2>Suggested Groups</h2>
             <ul>
                 <li th:each="group : ${suggestedGroups}">
-                    <span th:text="${group.name}">Finals Prep Group</span> - 
-                    <button th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/join\''">Join</button>
+                    <span th:if="${group != null}" th:text="${group.name}">Suggested Group</span>
+                    <button th:if="${group != null and group.id != null}"
+                            th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/join\''">
+                        Join
+                    </button>
+                </li>
+            </ul>
+            <p th:if="${suggestedGroups == null || suggestedGroups.isEmpty()}">No suggested groups available at the moment.</p>
+        </div>
+
+        <!-- Create Group Section -->
+        <div class="create-group">
+            <h2>Create a New Group</h2>
+            <form th:action="@{/groups/create}" method="post">
+                <input type="text" name="groupName" placeholder="Group Name" required>
+                <input type="text" name="course" placeholder="Course Name" required>
+                <input type="text" name="className" placeholder="Class Name" required>
+                <input type="text" name="exam" placeholder="Exam Name" required>
+                <button type="submit">Create Group</button>
+            </form>
+        </div>
+
+        <!-- Group Members Section -->
+        <div class="group-members"> 
+            <h2>Group Members</h2>
+            <ul>
+                <li th:each="group : ${userGroups}">
+                    <span th:if="${group != null}" th:text="${group.name}">Study Group</span>
+                    <ul th:if="${group != null and group.members != null and group.members.size() > 0}">
+                        <li th:each="member : ${group.members}">
+                            <img th:src="${member.profilePicture}" alt="Profile Picture" />
+                            <span th:text="${member.name}">Username</span> - 
+                            <span th:text="${member.course} + ', ' + ${group.exam}">Course/Exam</span>
+                        </li>
+                    </ul>
+                    <p th:if="${group == null or group.members == null or group.members.size() == 0}">
+                        No members found.
+                    </p>
                 </li>
             </ul>
         </div>

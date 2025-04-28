@@ -18,8 +18,19 @@ public class StudyGroup {
 
     private int maxMembers;
 
-    @ElementCollection
-    private List<String> members = new ArrayList<>();
+    // Many-to-one relationship with User for the owner of the group
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
+    @ManyToMany
+    @JoinTable(
+        name = "study_group_members",
+        joinColumns = @JoinColumn(name = "group_id"),  // Refers to StudyGroup ID
+        inverseJoinColumns = @JoinColumn(name = "user_id") // Refers to User ID
+    )
+    private List<User> members = new ArrayList<>();
+
 
     // Default constructor for JPA
     public StudyGroup() {}
@@ -40,7 +51,7 @@ public class StudyGroup {
     }
 
     // Full constructor for testing/mock cases
-    public StudyGroup(Long id, String name, String course, String className, String exam, int maxMembers, List<String> members) {
+    public StudyGroup(Long id, String name, String course, String className, String exam, int maxMembers, List<User> members, User owner) {
         this.id = id;
         this.name = name;
         this.course = course;
@@ -48,6 +59,7 @@ public class StudyGroup {
         this.exam = exam;
         this.maxMembers = maxMembers;
         this.members = members;
+        this.owner = owner;
     }
 
     // Getters and setters
@@ -99,11 +111,19 @@ public class StudyGroup {
         this.maxMembers = maxMembers;
     }
 
-    public List<String> getMembers() {
-        return members;
+    public User getOwner() {
+        return owner; // Getter for owner
     }
 
-    public void setMembers(List<String> members) {
-        this.members = members;
+    public void setOwner(User owner) {
+        this.owner = owner; // Setter for owner
+    }
+
+    public List<User> getMembers() {
+        return members; // Getter for members
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members; // Setter for members
     }
 }
