@@ -70,12 +70,6 @@ public class DashboardController {
                 List<StudyGroup> suggestedGroups = userService.getSuggestedGroups(user.getCourse(), user.getId());
                 model.addAttribute("suggestedGroups", suggestedGroups);
 
-                // Use proper logging framework instead of System.out.println
-                System.out.println("User Details: " + user);
-                System.out.println("Profile Details: " + profile);
-                System.out.println("User Groups Count: " + userGroups.size());
-                System.out.println("Suggested Groups Count: " + suggestedGroups.size());
-
                 return "dashboard";
             }
         }
@@ -135,4 +129,15 @@ public class DashboardController {
 
         return "redirect:/login?error=unauthorized";
     }
+
+    // Navigate to group page
+    @GetMapping("/groups/{groupId}")
+public String viewGroup(@PathVariable Long groupId, Model model) {
+    // Directly fetch the group, throwing an exception if not found
+    StudyGroup group = groupService.findById(groupId);
+
+    // Pass the group to the model for rendering on the group page
+    model.addAttribute("group", group);
+    return "group-page"; // Render the group-page template
+}
 }

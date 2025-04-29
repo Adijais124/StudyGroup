@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title th:text="'Notes for ' + ${group.name}">Notes Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        h2 {
+            color: #16a085;
+            margin-top: 20px;
+        }
+        form {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        input, textarea, button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-width: 600px;
+            margin: auto;
+        }
+        li {
+            background-color: #ecf0f1;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #16a085;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Notes for Upcoming Exams <span th:text="${group.name}"></span></h1>
+
+    <h3>Upload a Note</h3>
+    <form th:action="@{/groups/{groupId}/notes/upload(groupId=${group.id})}" method="post" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Note Title" required />
+        <textarea name="content" placeholder="Note Content" required></textarea>
+        <input type="file" name="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Available Notes</h2>
+    <ul>
+        <li th:each="note : ${notes}">
+            <p><strong>Title:</strong> <span th:text="${note.title}"></span></p>
+            <p><strong>File Name:</strong> <span th:text="${note.fileName}"></span></p>
+
+            <a th:if="${note.fileData != null}" 
+               th:href="@{/groups/{groupId}/notes/{noteId}/file(groupId=${group.id}, noteId=${note.id})}" 
+               download>
+               📥 Download File
+            </a>
+        </li>
+    </ul>
+    
+    <a th:href="@{/groups/{groupId}(groupId=${group.id})}">
+        <button>⬅ Back to Group</button>
+    </a>
+
+</body>
+</html>

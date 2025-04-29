@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
 
 import java.util.List;
 import java.util.Map;
@@ -101,4 +102,12 @@ public class StudyGroupController {
         List<StudyGroup> groups = studyGroupService.getAllGroups();
         return ResponseEntity.ok(groups);
     }
+    @GetMapping("/groups/{groupId}")
+    public String viewGroup(@PathVariable Long groupId, Model model) {
+        StudyGroup group = studyGroupService.findById(groupId);
+        model.addAttribute("group", group);
+        return "group-page"; // Points to the group-page.html template
+    }
+
+
 }

@@ -19,6 +19,11 @@ public class StudyGroupService {
 
     @Autowired
     private UserRepository userRepository;
+    public StudyGroup findById(Long groupId) {
+        return studyGroupRepository.findById(groupId)
+            .orElseThrow(() -> new RuntimeException("Group not found"));
+    }
+
 
     // Method to create a new study group
     public void createStudyGroup(String name, String course, String className, String exam, Long ownerId) {

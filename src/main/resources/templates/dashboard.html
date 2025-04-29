@@ -100,6 +100,7 @@
             <ul>
                 <li th:each="group : ${userGroups}">
                     <span th:if="${group != null}" th:text="${group.name}">Study Group</span>
+                    <a class="view-group" th:href="@{/groups/{groupId}(groupId=${group.id})}" th:if="${group != null}">View Group</a>
                     <button th:if="${group != null and group.id != null}"
                             th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/leave\''">
                         Leave
@@ -107,6 +108,8 @@
                 </li>
             </ul>
         </div>
+
+
 
         <!-- Suggested Groups Section -->
         <div class="suggestions">

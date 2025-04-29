@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title th:text="'Group: ' + ${group.name}">Group Page</title>
+    
+    <style>
+        /* Quick inline CSS for this specific page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        p {
+            font-size: 1.2em;
+            color: #34495e;
+        }
+        h2 {
+            color: #16a085;
+            margin-top: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #ecf0f1;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            margin-top: 20px;
+        }
+        input, textarea {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1 th:text="${group.name}">Group Name</h1>
+    <p th:text="'Course: ' + ${group.course}"></p>
+    <p th:text="'Exam: ' + ${group.exam}"></p>
+
+    <h2>Members</h2>
+    <ul>
+        <li th:each="member : ${group.members}" th:text="${member.name}"></li>
+    </ul>
+
+    <hr/>
+    
+    <p>Group ID: <span th:text="${group.id}"></span></p>
+    <ul>
+        <li th:each="note : ${notes}">
+            <p>Note ID: <span th:text="${note.id}"></span></p>
+            <p>File Name: <span th:text="${note.fileName}"></span></p>
+        </li>
+    </ul>
+
+    <h3>Upload a Note</h3>
+    <form th:action="@{/groups/{groupId}/notes/upload(groupId=${group.id})}" method="post" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Note Title" required />
+        <textarea name="content" placeholder="Note Content" required></textarea>
+        <input type="file" name="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+        <button type="submit">Upload</button>
+    </form>
+    <a th:href="@{/groups/{groupId}/notes-page(groupId=${group.id})}">
+        <button>View Notes</button>
+    </a>
+    
+</body>
+</html>
