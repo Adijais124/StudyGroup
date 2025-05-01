@@ -10,13 +10,8 @@
             padding: 20px;
             text-align: center;
         }
-        h1 {
-            color: #2c3e50;
-        }
-        h2 {
-            color: #16a085;
-            margin-top: 20px;
-        }
+        h1 { color: #2c3e50; }
+        h2 { color: #16a085; margin-top: 20px; }
         form {
             background-color: #ecf0f1;
             padding: 20px;
@@ -40,15 +35,8 @@
             border: none;
             cursor: pointer;
         }
-        button:hover {
-            background-color: #2980b9;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-            max-width: 600px;
-            margin: auto;
-        }
+        button:hover { background-color: #2980b9; }
+        ul { list-style-type: none; padding: 0; max-width: 600px; margin: auto; }
         li {
             background-color: #ecf0f1;
             margin: 10px 0;
@@ -64,9 +52,7 @@
             font-weight: bold;
             text-decoration: none;
         }
-        a:hover {
-            text-decoration: underline;
-        }
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -84,20 +70,25 @@
     <h2>Available Notes</h2>
     <ul>
         <li th:each="note : ${notes}">
-            <p><strong>Title:</strong> <span th:text="${note.title}"></span></p>
-            <p><strong>File Name:</strong> <span th:text="${note.fileName}"></span></p>
+            <p th:if="${note != null}"><strong>Title:</strong> <span th:text="${note.title}"></span></p>
+            <p th:if="${note != null}"><strong>File Name:</strong> <span th:text="${note.fileName}"></span></p>
 
-            <a th:if="${note.fileData != null}" 
-               th:href="@{/groups/{groupId}/notes/{noteId}/file(groupId=${group.id}, noteId=${note.id})}" 
-               download>
-               📥 Download File
-            </a>
+            <h3>Comments for this Note</h3>
+            <ul>
+                <li th:each="comment : ${note.comments}">
+                    <p><strong th:text="${comment.user.name}"></strong>: <span th:text="${comment.content}"></span></p>
+                    <small th:text="${#temporals.format(comment.timestamp, 'dd MMM yyyy HH:mm')}"></small>
+                </li>
+            </ul>
+
+            <h3>Add a Comment</h3>
+            <form th:action="@{/notes/{noteId}/comments/add(noteId=${note.id})}" method="post">
+                <textarea name="content" placeholder="Write your comment..." required></textarea>
+                <button type="submit">Post Comment</button>
+            </form>
         </li>
     </ul>
-    
-    <a th:href="@{/groups/{groupId}(groupId=${group.id})}">
-        <button>⬅ Back to Group</button>
-    </a>
 
+   
 </body>
 </html>

@@ -139,24 +139,7 @@
         </div>
 
         <!-- Group Members Section -->
-        <div class="group-members"> 
-            <h2>Group Members</h2>
-            <ul>
-                <li th:each="group : ${userGroups}">
-                    <span th:if="${group != null}" th:text="${group.name}">Study Group</span>
-                    <ul th:if="${group != null and group.members != null and group.members.size() > 0}">
-                        <li th:each="member : ${group.members}">
-                            <img th:src="${member.profilePicture}" alt="Profile Picture" />
-                            <span th:text="${member.name}">Username</span> - 
-                            <span th:text="${member.course} + ', ' + ${group.exam}">Course/Exam</span>
-                        </li>
-                    </ul>
-                    <p th:if="${group == null or group.members == null or group.members.size() == 0}">
-                        No members found.
-                    </p>
-                </li>
-            </ul>
-        </div>
+        
     </div>
 </body>
 </html>

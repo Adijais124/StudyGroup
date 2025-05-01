@@ -63,7 +63,10 @@
 
     <h2>Members</h2>
     <ul>
-        <li th:each="member : ${group.members}" th:text="${member.name}"></li>
+        <li th:each="member : ${group.members}">
+            <span th:text="${member.name}"></span>
+            
+        </li>
     </ul>
 
     <hr/>

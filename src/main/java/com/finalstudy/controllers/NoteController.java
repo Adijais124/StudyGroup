@@ -6,6 +6,8 @@ import com.finalstudy.models.User;
 import com.finalstudy.services.NoteService;
 import com.finalstudy.services.StudyGroupService;
 import com.finalstudy.repositories.UserRepository;
+import com.finalstudy.models.Comment;
+import com.finalstudy.services.CommentService;
 
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
@@ -30,22 +32,23 @@ public class NoteController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/groups/{groupId}/notes")
     public String viewNotes(@PathVariable Long groupId, Model model) {
         StudyGroup group = studyGroupService.findById(groupId);
         List<Note> notes = noteService.findNotesByGroupId(groupId);
 
-        // Debugging: Log number of notes retrieved
-        System.out.println("Total notes found for group " + groupId + ": " + notes.size());
+        // Ensure comments are retrieved with each note
         for (Note note : notes) {
-            System.out.println("Note ID: " + note.getId() + ", Title: " + note.getTitle() + ", File Name: " + note.getFileName());
+            List<Comment> comments = commentService.getCommentsForNote(note.getId());
+            note.setComments(comments);
         }
-
 
         model.addAttribute("group", group);
         model.addAttribute("notes", notes);
-        return "group-page";
+        return "notes-page";
     }
 
     @PostMapping("/groups/{groupId}/notes/upload")
@@ -88,11 +91,21 @@ public class NoteController {
     @GetMapping("/groups/{groupId}/notes-page")
     public String viewNotesPage(@PathVariable Long groupId, Model model) {
         StudyGroup group = studyGroupService.findById(groupId);
+        if (group == null) {
+            throw new RuntimeException("Group not found.");
+        }
+    
         List<Note> notes = noteService.findNotesByGroupId(groupId);
+    
+        for (Note note : notes) {
+            List<Comment> comments = commentService.getCommentsForNote(note.getId());
+            note.getComments().clear();
+            note.getComments().addAll(comments);
+        }
     
         model.addAttribute("group", group);
         model.addAttribute("notes", notes);
-        return "notes-page"; // Redirect to the new notes page
+        return "notes-page";
     }
 
     @GetMapping("/groups/{groupId}/notes/{noteId}/file")

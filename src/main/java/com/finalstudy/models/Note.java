@@ -2,13 +2,16 @@ package com.finalstudy.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
+import java.util.List;
 @Entity
 public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
@@ -65,4 +68,11 @@ public class Note {
 
     public LocalDateTime getTimestamp() { return timestamp; }
     public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    public List<Comment> getComments() {
+        return comments;
+    }
+    
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
