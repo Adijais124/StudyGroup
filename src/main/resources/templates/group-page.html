@@ -60,6 +60,8 @@
     <h1 th:text="${group.name}">Group Name</h1>
     <p th:text="'Course: ' + ${group.course}"></p>
     <p th:text="'Exam: ' + ${group.exam}"></p>
+    <p><strong>Admin:</strong> <span th:text="${group.owner.name}"></span></p>
+
 
     <h2>Members</h2>
     <ul>

@@ -39,7 +39,7 @@ public class StudyGroupController {
             Optional<User> userOptional = userService.findByEmail(userEmail);
 
             if (userOptional.isPresent()) {
-                User user = userOptional.get(); // Resolve the user object
+                
 
                 // Extract all required fields from the payload
                 String name = payload.get("name");
@@ -48,7 +48,13 @@ public class StudyGroupController {
                 String exam = payload.get("exam");
 
                 // Pass all arguments, including the owner ID, to the service method
-                studyGroupService.createStudyGroup(name, course, className, exam, user.getId());
+                User creatorUser = userOptional.get();
+                StudyGroup group = new StudyGroup();
+                group.setName(name);
+                group.setCourse(course);
+                group.setClassName(className);
+                group.setExam(exam);
+                group.setOwner(creatorUser);
 
                 return ResponseEntity.ok("Study group created successfully!");
             }
@@ -105,7 +111,14 @@ public class StudyGroupController {
     @GetMapping("/groups/{groupId}")
     public String viewGroup(@PathVariable Long groupId, Model model) {
         StudyGroup group = studyGroupService.findById(groupId);
+    
+        if (group == null) {
+            return "error-page"; // Redirect to an error page if the group isn't found
+        }
+    
         model.addAttribute("group", group);
+        model.addAttribute("owner", group.getOwner()); // ✅ Pass the owner (admin) to the template
+    
         return "group-page"; // Points to the group-page.html template
     }
 

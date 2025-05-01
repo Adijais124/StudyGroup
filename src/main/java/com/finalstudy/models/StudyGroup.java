@@ -22,7 +22,7 @@ public class StudyGroup {
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
-
+    
     @ManyToMany
     @JoinTable(
         name = "study_group_members",

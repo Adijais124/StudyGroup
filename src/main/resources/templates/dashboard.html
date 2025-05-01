@@ -5,72 +5,81 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
+        
         header {
             background: #6200ea;
             color: white;
-            padding: 10px 20px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
         nav {
             display: flex;
             align-items: center;
         }
+        
         nav a {
             color: white;
             text-decoration: none;
             margin-left: 20px;
         }
-        form {
-            display: inline;
-        }
+        
         .content {
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .profile, .groups, .suggestions {
-            margin-bottom: 20px;
+        
+        .card {
+            width: 90%;
+            max-width: 600px;
             padding: 20px;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
+        
         button {
-            padding: 10px 15px;
+            padding: 12px 18px;
             background: #6200ea;
             border: none;
             color: white;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: 0.3s;
         }
+        
         button:hover {
             background: #3700b3;
         }
+        
         .logout-button {
             background: red;
             margin-left: 20px;
         }
+        
         .logout-button:hover {
             background: darkred;
         }
-        .group-members img {
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
+        
+        ul {
+            list-style: none;
+            padding: 0;
         }
-        .group-members li {
-            display: flex;
-            align-items: center;
+        
+        li {
             margin-bottom: 10px;
-        }
-        .highlight {
-            color: #007bff;
-            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
     </style>
 </head>
@@ -79,55 +88,34 @@
         <h1>StudyHive Dashboard</h1>
         <nav>
             <a href="/profile">Edit Profile</a>
-            <a href="/groups">Find Groups</a>
             <form th:action="@{/logout}" method="post">
                 <button class="logout-button" type="submit">Logout</button>
             </form>
         </nav>
     </header>
+
     <div class="content">
         <!-- Profile Section -->
-        <div class="profile">
+        <div class="profile card">
             <h2>Your Profile</h2>
             <p><strong>Name:</strong> <span th:text="${user.name}">John Doe</span></p>
-            <p><strong>Course</strong> <span th:text="${profile.courseName}">Computer Science - CSE-B</span></p>
+            <p><strong>Course:</strong> <span th:text="${profile.courseName}">Computer Science - CSE-B</span></p>
             <p><strong>Exam Preparing:</strong> <span th:text="${profile.upcomingExams}">End Sem</span></p>
         </div>
 
         <!-- User Groups Section -->
-        <div class="groups">
+        <div class="groups card">
             <h2>Your Study Groups</h2>
             <ul>
                 <li th:each="group : ${userGroups}">
-                    <span th:if="${group != null}" th:text="${group.name}">Study Group</span>
-                    <a class="view-group" th:href="@{/groups/{groupId}(groupId=${group.id})}" th:if="${group != null}">View Group</a>
-                    <button th:if="${group != null and group.id != null}"
-                            th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/leave\''">
-                        Leave
-                    </button>
+                    <span th:text="${group.name}">Study Group</span>
+                    <a class="view-group" th:href="@{/groups/{groupId}(groupId=${group.id})}">View Group</a>
+                    <button th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/leave\''">Leave</button>
                 </li>
             </ul>
         </div>
-
-
-
-        <!-- Suggested Groups Section -->
-        <div class="suggestions">
-            <h2>Suggested Groups</h2>
-            <ul>
-                <li th:each="group : ${suggestedGroups}">
-                    <span th:if="${group != null}" th:text="${group.name}">Suggested Group</span>
-                    <button th:if="${group != null and group.id != null}"
-                            th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/join\''">
-                        Join
-                    </button>
-                </li>
-            </ul>
-            <p th:if="${suggestedGroups == null || suggestedGroups.isEmpty()}">No suggested groups available at the moment.</p>
-        </div>
-
         <!-- Create Group Section -->
-        <div class="create-group">
+        <div class="create-group card">
             <h2>Create a New Group</h2>
             <form th:action="@{/groups/create}" method="post">
                 <input type="text" name="groupName" placeholder="Group Name" required>
@@ -138,7 +126,18 @@
             </form>
         </div>
 
-        <!-- Group Members Section -->
+        <!-- Suggested Groups Section -->
+        <div class="suggestions card">
+            <h2>Suggested Groups</h2>
+            <ul>
+                <li th:each="group : ${suggestedGroups}">
+                    <span th:text="${group.name}">Suggested Group</span>
+                    <button th:onclick="'window.location.href=\'/groups/' + ${group.id} + '/join\''">Join</button>
+                </li>
+            </ul>
+            <p th:if="${suggestedGroups == null || suggestedGroups.isEmpty()}">No suggested groups available at the moment.</p>
+        </div>
+
         
     </div>
 </body>
