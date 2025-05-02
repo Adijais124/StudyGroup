@@ -13,8 +13,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     @Query("SELECT p FROM Profile p WHERE p.user.id = :userId")
     Optional<Profile> findByUserId(@Param("userId") Long userId);
 
-    // Additional utility methods (if needed in the future)
-    // e.g., Fetch all profiles linked to a specific course
-    // @Query("SELECT p FROM Profile p WHERE p.courseName = :courseName")
-    // List<Profile> findProfilesByCourse(@Param("courseName") String courseName);
+    
 }

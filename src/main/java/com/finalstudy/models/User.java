@@ -19,6 +19,8 @@ public class User {
     private String name;
     private String course;
     private String profilePicture;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Profile profile;
 
     // Many-to-Many relationship with StudyGroup
     @ManyToMany(mappedBy = "members")

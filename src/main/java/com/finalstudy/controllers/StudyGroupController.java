@@ -96,11 +96,7 @@ public class StudyGroupController {
     }
 
     // Endpoint to find study groups by course and class name
-    @GetMapping("/search")
-    public ResponseEntity<List<StudyGroup>> searchStudyGroups(@RequestParam String course, @RequestParam String className) {
-        List<StudyGroup> groups = studyGroupService.findByCourseAndClassName(course, className);
-        return ResponseEntity.ok(groups);
-    }
+    
 
     // Endpoint to get all study groups
     @GetMapping("/all")
@@ -117,9 +113,9 @@ public class StudyGroupController {
         }
     
         model.addAttribute("group", group);
-        model.addAttribute("owner", group.getOwner()); // ✅ Pass the owner (admin) to the template
+        model.addAttribute("owner", group.getOwner()); //  owner (admin) 
     
-        return "group-page"; // Points to the group-page.html template
+        return "group-page"; 
     }
 
 

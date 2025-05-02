@@ -32,9 +32,18 @@ public class UserService {
         User user = new User();
         user.setName(name);
         user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password)); // Hash and set the password
-        user.setCourse(course); // Set the user's course
-        return userRepository.save(user); // Save the user to the database
+        user.setPassword(passwordEncoder.encode(password)); // ✅ Hash password
+        user.setCourse(course);
+    
+        // 🔥 Ensure Profile is Created and Associated with User
+        Profile profile = new Profile();
+        profile.setCourseName(course); // ✅ Assign course to profile
+        profile.setUser(user); // ✅ Link profile to user
+    
+        userRepository.save(user); // ✅ Save user
+        profileRepository.save(profile); // ✅ Save profile separately
+    
+        return user;
     }
 
     // Method for finding a user by email
